@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
     pcap_close(handle);
 }
 
-void GetMyIp(char *interface, char *ip_buffer){
+void GetMyIp(char *interface, char *ip_buffer){//참조..
     int fd;
     struct ifreq ifr;
 
@@ -84,7 +84,7 @@ void GetMyIp(char *interface, char *ip_buffer){
     sprintf(ip_buffer, "%s", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
 }
 
-Mac GetMyMac(char *interface){
+Mac GetMyMac(char *interface){//참조 했으나 타입을 맞추기 위해 수정.
     int s;
     struct ifreq ifr;
     s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -120,7 +120,7 @@ Mac GetVictimMac(pcap *handle, char *sender,Mac myMac, char *interface){
             printf("pcap_next_ex return %d(%s)\n", res, pcap_geterr(handle));
             break;
         }
-        struct libnet_ethernet_hdr *eth = (libnet_ethernet_hdr *)packet2;
+        struct libnet_ethernet_hdr *eth = (libnet_ethernet_hdr *)packet2;//패킷을 받아노는 루틴을 반복하는게 효율적일 수도 있음
         if(eth->ether_type == htons(EthHdr::Arp))//arp 패킷인지 확인
         {
             for(int i =0;i < 6;i++){
