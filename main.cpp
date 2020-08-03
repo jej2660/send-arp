@@ -114,21 +114,21 @@ Mac GetVictimMac(pcap *handle, char *sender,Mac myMac, char *interface){
         struct pcap_pkthdr* header;
         const u_char* packet2;
         uint8_t data[6];
-        int res = pcap_next_ex(handle, &header, &packet2);
+        int res = pcap_next_ex(handle, &header, &packet2);//arp repl를 받끼전에 열기
         if (res == 0) continue;
         if (res == -1 || res == -2) {
             printf("pcap_next_ex return %d(%s)\n", res, pcap_geterr(handle));
             break;
         }
         struct libnet_ethernet_hdr *eth = (libnet_ethernet_hdr *)packet2;
-        if(eth->ether_type == htons(EthHdr::Arp))
+        if(eth->ether_type == htons(EthHdr::Arp))//arp 패킷인지 확인
         {
             for(int i =0;i < 6;i++){
                 data[i] = eth->ether_shost[i];
             }
             return Mac(data);
         }
-
+        //arp 패킷 전송
         EthArpPacket packet;
         packet.eth_.dmac_ = Mac("FF:FF:FF:FF:FF:FF");
         packet.eth_.smac_ = Mac(std::string(myMac));
